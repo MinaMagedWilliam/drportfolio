@@ -6,6 +6,7 @@ import {
   FaTwitter,
   FaYoutube,
   FaEnvelope,
+  FaFacebook,
 } from 'react-icons/fa';
 import './Contact.css';
 
@@ -38,11 +39,11 @@ const Contact = () => {
   };
 
   const socialLinks = [
-    { icon: <FaLinkedin />, name: 'LinkedIn', url: '#' },
-    { icon: <FaInstagram />, name: 'Instagram', url: '#' },
-    { icon: <FaTwitter />, name: 'Twitter', url: '#' },
-    { icon: <FaYoutube />, name: 'YouTube', url: '#' },
-    { icon: <FaEnvelope />, name: 'Email', url: '#' },
+    { icon: <FaLinkedin />, name: 'LinkedIn', url: 'https://www.linkedin.com/in/mina-maged-ab9070188/' },
+    { icon: <FaInstagram />, name: 'Instagram', url: 'https://www.instagram.com/mena_maged_william/' },
+    { icon: <FaFacebook />, name: 'Facebook', url: 'https://www.facebook.com/mena.maged.william' },
+    { icon: <FaYoutube />, name: 'YouTube', url: 'https://www.youtube.com/@dr.minamaged' },
+    { icon: <FaEnvelope />, name: 'Email', url: 'drminamagedwil@gmail.com' },
   ];
 
   const containerVariants = {
