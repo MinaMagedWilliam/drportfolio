@@ -43,7 +43,7 @@ const Contact = () => {
     { icon: <FaInstagram />, name: 'Instagram', url: 'https://www.instagram.com/mena_maged_william/' },
     { icon: <FaFacebook />, name: 'Facebook', url: 'https://www.facebook.com/mena.maged.william' },
     { icon: <FaYoutube />, name: 'YouTube', url: 'https://www.youtube.com/@dr.minamaged' },
-    { icon: <FaEnvelope />, name: 'Email', url: 'drminamagedwil@gmail.com' },
+    { icon: <FaEnvelope />, name: 'Email', url: 'mailto:drminamagedwil@gmail.com' },
   ];
 
   const containerVariants = {
@@ -112,11 +112,11 @@ const Contact = () => {
               <div className="contact-details">
                 <div className="contact-detail-item">
                   <h4 className="detail-label">Email</h4>
-                  <p className="detail-value">contact@minamaged.com</p>
+                  <p className="detail-value">drminamagedwil@gmail.com</p>
                 </div>
                 <div className="contact-detail-item">
                   <h4 className="detail-label">Location</h4>
-                  <p className="detail-value">Available Worldwide</p>
+                  <p className="detail-value">El- Minya, Egypt</p>
                 </div>
               </div>
             </motion.div>
