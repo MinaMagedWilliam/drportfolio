@@ -1,5 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
+import emailjs from '@emailjs/browser';
+import { emailjsConfig } from '../config/emailjs';
 import {
   FaLinkedin,
   FaInstagram,
@@ -12,6 +14,7 @@ import './Contact.css';
 
 const Contact = () => {
   const ref = useRef(null);
+  const formRef = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [formData, setFormData] = useState({
     name: '',
@@ -20,6 +23,12 @@ const Contact = () => {
     message: '',
   });
   const [formStatus, setFormStatus] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize EmailJS with public key
+  useEffect(() => {
+    emailjs.init(emailjsConfig.publicKey);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -28,14 +37,43 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Placeholder for form submission
-    setFormStatus('Message sent successfully! (Demo mode)');
-    setTimeout(() => {
-      setFormStatus('');
+    setIsLoading(true);
+    setFormStatus('');
+
+    try {
+      // Send email using EmailJS
+      const result = await emailjs.send(
+        emailjsConfig.serviceId,
+        emailjsConfig.templateId,
+        {
+          from_name: formData.name,
+          reply_to: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }
+      );
+
+      console.log('Email sent successfully:', result);
+      setFormStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 3000);
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        setFormStatus('');
+      }, 5000);
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      setFormStatus('error');
+      
+      // Clear error message after 5 seconds
+      setTimeout(() => {
+        setFormStatus('');
+      }, 5000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const socialLinks = [
@@ -192,21 +230,31 @@ const Contact = () => {
 
               {formStatus && (
                 <motion.div
-                  className="form-status"
+                  className={`form-status ${formStatus}`}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
-                  {formStatus}
+                  {formStatus === 'success' && (
+                    <>
+                      ✅ Message sent successfully! I'll get back to you soon.
+                    </>
+                  )}
+                  {formStatus === 'error' && (
+                    <>
+                      ❌ Failed to send message. Please try again or email me directly at drminamagedwil@gmail.com
+                    </>
+                  )}
                 </motion.div>
               )}
 
               <motion.button
                 type="submit"
                 className="submit-btn"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                disabled={isLoading}
+                whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                whileTap={{ scale: isLoading ? 1 : 0.98 }}
               >
-                Send Message
+                {isLoading ? 'Sending...' : 'Send Message'}
               </motion.button>
             </motion.form>
           </div>
@@ -215,7 +263,16 @@ const Contact = () => {
 
       <motion.footer className="footer" variants={itemVariants}>
         <p className="footer-text">
-          © {new Date().getFullYear()} Dr. Mina Maged. All rights reserved.
+          © {new Date().getFullYear()}{' '}
+          <a 
+            href="https://www.facebook.com/mena.maged.william" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="footer-link"
+          >
+            Dr. Mina Maged
+          </a>
+          . All rights reserved.
         </p>
         <p className="footer-tagline">
           Merging Science with Creativity
