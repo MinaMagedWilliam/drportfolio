@@ -50,6 +50,13 @@ const About = () => {
       filter: 'digital',
       link: '#portfolio',
     },
+    {
+      title: 'Portfolio Websites',
+      description: 'Custom-built React portfolios showcasing professional work with modern web technologies',
+      icon: '🌐',
+      filter: 'portfolios',
+      link: '#portfolio',
+    },
   ];
 
   const handleSkillClick = (filter) => {

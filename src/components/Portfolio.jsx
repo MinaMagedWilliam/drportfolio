@@ -23,6 +23,13 @@ const Portfolio = () => {
       setLoading(true);
       const fetchedProjects = await appwriteService.getProjects();
       
+      // If no projects from Appwrite, use placeholders
+      if (!fetchedProjects || fetchedProjects.length === 0) {
+        setProjects(getPlaceholderProjects());
+        setLoading(false);
+        return;
+      }
+      
       // Transform Appwrite data to match our component structure
       const transformedProjects = fetchedProjects.map(project => ({
         id: project.$id,
@@ -41,7 +48,8 @@ const Portfolio = () => {
         videoId: project.videoId || '', // Uploaded video file ID
         videoFileUrl: project.videoId 
           ? appwriteService.getFileView(project.videoId)
-          : null
+          : null,
+        liveDemo: project.liveDemo || '', // Live demo URL for portfolio projects
       }));
       
       setProjects(transformedProjects);
@@ -109,6 +117,16 @@ const Portfolio = () => {
       image: 'https://via.placeholder.com/400x300/1a1a1a/c0c0c0?text=Ortho+Case',
       details: 'Full orthodontic treatment including clear aligner therapy. Digital treatment planning from start to finish with predictable results.',
       technologies: ['Clear Aligners', 'Digital Treatment Planning', '3D Scanning'],
+    },
+    {
+      id: 7,
+      title: 'Dr. Mina Maged Portfolio',
+      categories: ['portfolios'], // Portfolio category
+      description: 'Modern React portfolio with admin CMS, galleries, and real-time features',
+      image: 'https://via.placeholder.com/400x300/1a1a1a/00d9ff?text=Portfolio+Website',
+      details: 'A fully-featured portfolio website built with React 18 and Vite, showcasing professional work with an integrated admin dashboard. Features include multi-image galleries with keyboard navigation, video support (YouTube/Vimeo + direct uploads), multi-category filtering, real-time contact form via EmailJS, and complete CMS powered by Appwrite. Built without a traditional backend using modern JAMstack architecture.',
+      technologies: ['React', 'Vite', 'Appwrite', 'EmailJS', 'Framer Motion', 'React Router', 'CSS3', 'Netlify'],
+      liveDemo: window.location.origin, // Link to current site
     },
   ];
 
@@ -223,6 +241,7 @@ const Portfolio = () => {
     { id: 'clinical', label: 'Clinical' },
     { id: 'motion', label: 'Motion Graphics' },
     { id: 'digital', label: 'Digital' },
+    { id: 'portfolios', label: 'Portfolios' },
   ];
 
   const filteredProjects =
@@ -251,9 +270,6 @@ const Portfolio = () => {
       window.removeEventListener('filterPortfolio', handleFilterEvent);
     };
   }, []);
-    filter === 'all'
-      ? projects
-      : projects.filter((project) => project.category === filter);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -322,6 +338,7 @@ const Portfolio = () => {
                 layout
                 whileHover={{ y: -10 }}
                 transition={{ duration: 0.3 }}
+                onClick={() => handleViewDetails(project)}
               >
                 <div className="portfolio-image-wrapper">
                   <img
@@ -462,6 +479,21 @@ const Portfolio = () => {
               </div>
               <h2 className="modal-title">{selectedProject.title}</h2>
               <p className="modal-description">{selectedProject.details}</p>
+
+              {/* Live Demo Button for Portfolio Projects */}
+              {selectedProject.liveDemo && (
+                <div className="modal-live-demo">
+                  <a 
+                    href={selectedProject.liveDemo} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="live-demo-btn"
+                  >
+                    🌐 View Live Demo
+                  </a>
+                  <p className="demo-hint">Click to test this portfolio in action!</p>
+                </div>
+              )}
 
               {selectedProject.technologies && (
                 <div className="modal-technologies">

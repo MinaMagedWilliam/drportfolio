@@ -26,6 +26,7 @@ const AdminDashboard = () => {
     videoUrl: '', // For YouTube/Vimeo links
     videoFile: null, // For direct video upload
     videoId: '', // Stored video file ID in Appwrite
+    liveDemo: '', // Live demo URL for portfolio projects
   });
   const [uploading, setUploading] = useState(false);
   const [videoOption, setVideoOption] = useState('url'); // 'url' or 'upload'
@@ -157,6 +158,7 @@ const AdminDashboard = () => {
         imageId: imageId,
         galleryImages: galleryImages,
         videoUrl: formData.videoUrl || '', // YouTube/Vimeo link
+        liveDemo: formData.liveDemo || '', // Live demo URL for portfolio projects
       };
 
       // Only add videoId if it exists (attribute might not be created yet)
@@ -215,6 +217,7 @@ const AdminDashboard = () => {
       videoUrl: project.videoUrl || '',
       videoFile: null,
       videoId: project.videoId || '',
+      liveDemo: project.liveDemo || '', // Live demo URL
     });
     setVideoOption(project.videoId ? 'upload' : 'url'); // Set option based on existing data
     setShowForm(true);
@@ -268,6 +271,7 @@ const AdminDashboard = () => {
       videoUrl: '',
       videoFile: null,
       videoId: '',
+      liveDemo: '', // Reset live demo URL
     });
     setVideoOption('url'); // Reset to URL option
     setEditingProject(null);
@@ -348,6 +352,14 @@ const AdminDashboard = () => {
                       />
                       <span>Digital</span>
                     </label>
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={formData.categories.includes('portfolios')}
+                        onChange={() => handleCategoryChange('portfolios')}
+                      />
+                      <span>Portfolios</span>
+                    </label>
                   </div>
                   {formData.categories.length === 0 && (
                     <small className="error-text">Please select at least one category</small>
@@ -392,6 +404,22 @@ const AdminDashboard = () => {
                   required
                   placeholder="CAD/CAM, Digital Impressions, 3D Printing"
                 />
+              </div>
+
+              {/* Live Demo URL - for Portfolio Projects */}
+              <div className="form-group">
+                <label htmlFor="liveDemo">Live Demo URL (Optional - for Portfolio websites)</label>
+                <input
+                  type="url"
+                  id="liveDemo"
+                  name="liveDemo"
+                  value={formData.liveDemo}
+                  onChange={handleInputChange}
+                  placeholder="https://example.com or https://example.netlify.app"
+                />
+                <small style={{ color: 'var(--color-text-secondary)', display: 'block', marginTop: '0.5rem' }}>
+                  Add a live demo link for portfolio projects. Visitors can click to test the site!
+                </small>
               </div>
 
               {/* Video Section - Choose URL or Upload */}
