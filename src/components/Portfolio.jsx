@@ -200,23 +200,31 @@ const Portfolio = () => {
   const getVideoEmbed = (url) => {
     if (!url) return null;
 
-    // YouTube
-    const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    console.log('Processing video URL:', url); // Debug log
+
+    // YouTube - Regular videos and Shorts
+    const youtubeMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/);
     if (youtubeMatch) {
-      return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+      const embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+      console.log('YouTube video detected, embed URL:', embedUrl); // Debug log
+      return embedUrl;
     }
 
     // Vimeo
     const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
     if (vimeoMatch) {
-      return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+      const embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+      console.log('Vimeo video detected, embed URL:', embedUrl); // Debug log
+      return embedUrl;
     }
 
     // Direct video URL (.mp4, .webm, .ogg)
     if (url.match(/\.(mp4|webm|ogg)$/i)) {
+      console.log('Direct video URL detected:', url); // Debug log
       return url; // Return as is for direct video
     }
 
+    console.log('No valid video format detected'); // Debug log
     return null;
   };
 
@@ -399,22 +407,27 @@ const Portfolio = () => {
                     <source src={selectedProject.videoFileUrl} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
-                ) : getVideoEmbed(selectedProject.videoUrl).match(/\.(mp4|webm|ogg)$/i) ? (
-                  // Direct video URL
-                  <video controls>
-                    <source src={getVideoEmbed(selectedProject.videoUrl)} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                ) : (
-                  // Embedded video (YouTube, Vimeo)
-                  <iframe
-                    src={getVideoEmbed(selectedProject.videoUrl)}
-                    title={selectedProject.title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                )}
+                ) : (() => {
+                  const embedUrl = getVideoEmbed(selectedProject.videoUrl);
+                  const isDirectVideo = embedUrl && embedUrl.match(/\.(mp4|webm|ogg)$/i);
+                  
+                  return isDirectVideo ? (
+                    // Direct video URL
+                    <video controls>
+                      <source src={embedUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    // Embedded video (YouTube, Vimeo)
+                    <iframe
+                      src={embedUrl}
+                      title={selectedProject.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  );
+                })()}
               </div>
             )}
             
